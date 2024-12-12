@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chatbot UI</title>
-  <style>
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Chatbot UI</title>
+   <style>
     body {
       font-family: Arial, sans-serif;
       display: flex;
@@ -68,71 +68,71 @@
     .chat-footer button:hover {
       background-color: #005bb5;
     }
-  </style>
-</head>
-<body>
-  <div class="chat-container">
-    <div class="chat-header">
-      Ask Narayan
-    </div>
-    <div class="chat-body" id="chat-body"></div>
-    <div class="chat-footer">
-      <input type="text" id="user-input" placeholder="Type your message..." />
-      <button onclick="sendMessage()">Send</button>
-    </div>
-    
-  </div>
-
-  <script>
-    const chatBody = document.getElementById("chat-body");
-    const userInput = document.getElementById("user-input");
-
-    // Function to append a message to the chat
-    function appendMessage(sender, message) {
-      const messageDiv = document.createElement("div");
-      messageDiv.className = `message ${sender}-message`;
-      messageDiv.textContent = message;
-      chatBody.appendChild(messageDiv);
-      chatBody.scrollTop = chatBody.scrollHeight; // Auto-scroll
-    }
-
-    // Function to send a message to the Rasa backend
-    async function sendMessage() {
-      const message = userInput.value.trim();
-      if (!message) return;
-
-      // Append user message to the chat
-      appendMessage("user", message);
-      userInput.value = "";
-
-      try {
-        const response = await fetch("http://127.0.0.1:5000/webhook", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ sender: "user", message }),
-        });
-
-        const data = await response.json();
-
-        if (Array.isArray(data) && data.length) 
-        {
-          data.forEach((res) => {
-          if (res.text) appendMessage("bot", res.text);
-        });
-      } 
-      else {
-        appendMessage("bot", "Sorry, I didn't understand that.");
-      }
-    } catch (error) {
-      console.error("Error communicating with the server:", error);
-      appendMessage("bot", "Error connecting to the server.");
-    }
-      
-    }
-  </script>
-</body>
-</html>
-
-
+   </style>
+ </head>
+ <body>
+   <div class="chat-container">
+     <div class="chat-header">
+       Ask Narayan
+     </div>
+     <div class="chat-body" id="chat-body"></div>
+     <div class="chat-footer">
+       <input type="text" id="user-input" placeholder="Type your message..." />
+       <button onclick="sendMessage()">Send</button>
+     </div>
+   </div>
+ 
+   <script>
+     const chatBody = document.getElementById("chat-body");
+     const userInput = document.getElementById("user-input");
+     const BACKEND_URL = window.location.origin + "/webhook";
+ 
+     function appendMessage(sender, message) {
+       const messageDiv = document.createElement("div");
+       messageDiv.className = `message ${sender}-message`;
+       messageDiv.textContent = message;
+       chatBody.appendChild(messageDiv);
+       chatBody.scrollTop = chatBody.scrollHeight;
+     }
+ 
+     async function sendMessage() {
+       const message = userInput.value.trim();
+       if (!message) return;
+ 
+       appendMessage("user", message);
+       userInput.value = "";
+ 
+       try {
+         const response = await fetch(BACKEND_URL, {
+           method: "POST",
+           headers: {
+             "Content-Type": "application/json",
+           },
+           body: JSON.stringify({ sender: "user", message }),
+         });
+ 
+         const data = await response.json();
+ 
+         if (Array.isArray(data) && data.length) {
+           data.forEach((res) => {
+             if (res.text) appendMessage("bot", res.text);
+           });
+         } else {
+           appendMessage("bot", "Sorry, I didn't understand that.");
+         }
+       } catch (error) {
+         console.error("Error communicating with the server:", error);
+         appendMessage("bot", "Error connecting to the server.");
+       }
+     }
+ 
+     // Add event listener for Enter key
+     userInput.addEventListener("keypress", function(event) {
+       if (event.key === "Enter") {
+         event.preventDefault();
+         sendMessage();
+       }
+     });
+   </script>
+ </body>
+ </html>
