@@ -11,4 +11,11 @@ sleep 5  # Give Rasa some time to start, or you can use a better check for readi
 
 echo "Starting Flask app..."
 gunicorn app:app  # Start Flask
+
+# Run your app (optional, if necessary)
+python app.py
+
+# Keep the container running
+wait
+
 echo "Flask app started"
