@@ -10,7 +10,7 @@ RASA_SERVER_URL = os.environ.get("RASA_SERVER_URL", "http://127.0.0.1:5005/webho
 
 @app.route('/')
 def index():
-    return render_template('chatbox.html')
+    return send_file('chatbox.html')
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
