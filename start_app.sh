@@ -13,6 +13,7 @@ echo "Starting Flask app..."
 gunicorn app:app  # Start Flask
 
 # Run your app (optional, if necessary)
+echo "Starting python..."
 python app.py
 
 # Keep the container running
